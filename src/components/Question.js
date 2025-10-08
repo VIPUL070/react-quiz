@@ -1,9 +1,9 @@
 import Options from "./Options";
 
-function Question({question}){
-    console.log(question)
+function Question({question ,answer ,dispatch}){
+    console.log(question);
     return(
-      <Options question={question}/>
+      <Options question={question} answer={answer} dispatch={dispatch}/>
     );
 }
 
