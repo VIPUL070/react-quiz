@@ -21,11 +21,8 @@ function Options({question ,answer ,dispatch}){
           onClick={() => dispatch({type:'newAnswer' , payload : index})}>
               {option}
           </button>)
-
           }
-
         </div>
-        {answer && <button className="btn btn-next">Next</button>}
       </div>
     );
 }
