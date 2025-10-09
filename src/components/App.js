@@ -8,6 +8,10 @@ import Question from './Question';
 import NextButton from './NextButton';
 import Progress from './Progress';
 import FinishScreen from './FinishScreen';
+import Timer from './Timer';
+import Footer from './Footer';
+
+const SECS_PER_QUESTION = 30 ;
 
 const initialState = {
   questions: [],
@@ -16,7 +20,8 @@ const initialState = {
   index : 0,
   answer : null,
   points : 0,
-  highscore : 0
+  highscore : 0,
+  secondRemains : null
 }
 
 function reducer(state , action){
@@ -31,7 +36,7 @@ function reducer(state , action){
       return {...state , status: "error"};
 
     case "start":
-      return {...state , status: "active"};
+      return {...state , status: "active" , secondRemains : state.questions.length * SECS_PER_QUESTION};
 
     case 'newAnswer':
       const currQuestion = state.questions.at(state.index);
@@ -52,6 +57,9 @@ function reducer(state , action){
     case 'restart':
       return {...initialState , questions: state.questions , status : 'ready' }
 
+    case 'tick':
+      return {...state , secondRemains : state.secondRemains - 1 , status: state.secondRemains === 0 ? 'finished' : state.status}
+
     default:
       throw new Error("Unknown Action");
   }
@@ -59,7 +67,7 @@ function reducer(state , action){
 }
 
 function App() {
-  const [{questions , status , index , answer , points , highscore} , dispatch] = useReducer(reducer , initialState);
+  const [{questions , status , index , answer , points , highscore , secondRemains} , dispatch] = useReducer(reducer , initialState);
 
   const totalQuestions = questions.length;
   const maxPoints = questions.reduce((acc,curr) => acc + curr.points , 0)
@@ -106,8 +114,11 @@ function App() {
           dispatch={dispatch}
           answer={answer}
          />
-         <NextButton dispatch={dispatch} answer={answer} index={index} 
-         totalQuestions={totalQuestions} />
+         <Footer>
+          <Timer dispatch={dispatch} secondRemains={secondRemains} />
+          <NextButton dispatch={dispatch} answer={answer} index={index} 
+          totalQuestions={totalQuestions} />
+         </Footer>
          </>
          }
 
